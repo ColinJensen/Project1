@@ -53,11 +53,36 @@ public class PlayPoker {
                 }
                 if(p2.isIn()) { 
                     if(p2.determineValue(river) == maxHandValue) { //if p2 shares the currently highest value
+                        winningPlayers.add(p2); //add them to the list
+                    } else if(p2.determineValue(river) > maxHandValue) {//if they are higher
+                        maxHandValue = p2.determineValue(river); //clear the list and add themself
+                        winningPlayers.clear();
                         winningPlayers.add(p2);
-                    } else if(p2.determineValue(river) > maxHandValue) {
-                        maxHandValue = p2.determineValue(river);
                     }
                 }
+                if(p3.isIn()) { 
+                    if(p2.determineValue(river) == maxHandValue) { //if p3 shares the currently highest value
+                        winningPlayers.add(p3); 
+                    } else if(p3.determineValue(river) > maxHandValue) {
+                        maxHandValue = p3.determineValue(river); 
+                        winningPlayers.clear();
+                        winningPlayers.add(p3);
+                    }
+                }
+                if(p4.isIn()) { 
+                    if(p2.determineValue(river) == maxHandValue) { //same for p4
+                        winningPlayers.add(p4); 
+                    } else if(p4.determineValue(river) > maxHandValue) {
+                        maxHandValue = p4.determineValue(river); 
+                        winningPlayers.clear();
+                        winningPlayers.add(p4);
+                    }
+                }
+
+                if(winningPlayers.size() == 1) {//if only one person of a value tier, they did the best
+                    winningPlayers.get(0).addChips(pot);
+                    System.out.println(winningPlayers.get(0).getName() + " won " + pot + " chips!");
+                } 
 
 
             } else {
@@ -144,8 +169,8 @@ public class PlayPoker {
         } else {
             System.out.println(p4.name + " is out!");
         }
-
-
+       
+        
 
         
         

@@ -26,7 +26,7 @@ public abstract class Player {
         return chips;
     }
 
-    public void modifyChips(int mod) {
+    public void addChips(int mod) {
         this.chips=chips+mod;
     }
 
