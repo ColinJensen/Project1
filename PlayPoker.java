@@ -162,11 +162,22 @@ public class PlayPoker {
                     } else if(maxHandValue == 3) { //2 pair or 3 of a kind. 3 of a kind beats 2 pair
 
                     } else if(maxHandValue == 5) {//4 is impossible (river is 5), 5 is a straight
-
+                        //These are unlikely, and in my rules its going to be a tie
+                        
+                        pot=pot/winningPlayers.size();//split winnings among remaining players
+                        for(Player p:winningPlayers) {
+                            p.addChips(pot);//split winnings
+                        }
                     } else if(maxHandValue == 6) {//Flush. high card wins
-
+                        pot=pot/winningPlayers.size();//split winnings among remaining players
+                        for(Player p:winningPlayers) {
+                            p.addChips(pot);//split winnings
+                        }
                     } else if(maxHandValue == 7) {//full house. higher card wins.
-
+                        pot=pot/winningPlayers.size();//split winnings among remaining players
+                        for(Player p:winningPlayers) {
+                            p.addChips(pot);//split winnings
+                        }
                     } else if(maxHandValue == 9) {//8 and 9 were combined. Highest card wins
 
                     }
