@@ -162,11 +162,11 @@ public abstract class Player {
             return 8;
         } if(fullHouse) { //full house
             return 7;
-        } if(maxFlush>riverSize) {
+        } if(maxFlush>=riverSize) {
             return 6;
         } if(maxStraightStreak==5) {
             return 5;
-        } if(maxStraightStreak>riverSize) {
+        } if(maxStraightStreak>=riverSize) {
             return 4;
         } if(pairSize==3) { //3 of a kind
             return 3;

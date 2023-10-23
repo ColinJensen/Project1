@@ -2,6 +2,7 @@ package Project1;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Collections;
 
 public class PlayPoker {
     public static void main(String[] args) {
@@ -15,7 +16,7 @@ public class PlayPoker {
 
 
         Deck deck, river;
-        int pot=0, maxHandValue=0;
+        int pot=0, maxHandValue=0, maxRank=0;
         ArrayList<Player> winningPlayers = new ArrayList<Player>();
 
         //Here is a game of poker
@@ -82,7 +83,56 @@ public class PlayPoker {
                 if(winningPlayers.size() == 1) {//if only one person of a value tier, they did the best
                     winningPlayers.get(0).addChips(pot);
                     System.out.println(winningPlayers.get(0).getName() + " won " + pot + " chips!");
-                } 
+                } else {//handle logic for multiple winners
+                    //Pre sort the hands and river for easy determination
+                    Collections.sort(river.getList());//sorts river's list
+                    for(Player p: winningPlayers){
+                        Collections.sort(p.getHand().getList());//sort every player's hand
+                    }
+                    if(maxHandValue == 1) {//no good cards, high card wins
+                        for(Player p: winningPlayers) {
+                            if(p.getHand().getList().get(1).getRank()>maxRank) {
+                                maxRank = p.getHand().getList().get(1).getRank();
+                            }
+                        }
+                        //now max rank is correct. Check against river
+                        //if river has highest value, all tie.
+                        //if not, remove any hand that is worse. 
+                            //if multiple remain, they tie
+                            //otherwise last remaining has the best hand and wins
+                        if(river.getList().get(4).getRank()>=maxRank) {
+                            pot=pot/winningPlayers.size();
+                            for(Player p:winningPlayers) {
+                                p.addChips(pot);//split winnings
+                            }
+                        } else{
+                            for(Player p:winningPlayers) {
+                                if(p.getHand().getList().get(1).getRank()<maxRank) {
+                                    winningPlayers.remove(p);
+                                }
+                            }
+                            pot=pot/winningPlayers.size();//split winnings among remaining players
+                            for(Player p:winningPlayers) {
+                                p.addChips(pot);//split winnings
+                            }
+                        }
+
+
+
+                    } else if(maxHandValue == 2) {//pairs. Highest Wins
+                        
+                    } else if(maxHandValue == 3) { //2 pair or 3 of a kind. 3 of a kind beats 2 pair
+
+                    } else if(maxHandValue == 5) {//4 is impossible (river is 5), 5 is a straight
+
+                    } else if(maxHandValue == 6) {//Flush. high card wins
+
+                    } else if(maxHandValue == 7) {//full house. higher card wins.
+
+                    } else if(maxHandValue == 9) {//8 and 9 were combined. Highest card wins
+
+                    }
+                }
 
 
             } else {
