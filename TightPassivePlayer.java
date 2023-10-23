@@ -39,15 +39,14 @@ public class TightPassivePlayer extends Player {
          } else { //last round
             bet= 25;
          }
-         if(bet<chips){ //if the bet would be too high run else
+         if(bet<=chips){ //if the bet would be too high run else
             if(bet<maxBet) {//if bet isnt high enough, fold
                return -1;
             }//if chips for bet AND current bet is not too high, bet
-            chips = chips - maxBet + currentBet; //bet gets added on top of current bet
-            currentBet = maxBet + currentBet;//match player's bet
-            return currentBet;
+            chips = chips - maxBet; //bet gets added on top of current bet
+            return maxBet;//match player's bet
          } else { //and go all in
-            currentBet = chips + currentBet;
+            currentBet = chips;
             chips = 0;
             return currentBet;
          }

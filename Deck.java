@@ -25,7 +25,10 @@ public class Deck {
 
     Deck(Deck copyFromDeck) { //this is used to make a deep copy
         //source: https://stackoverflow.com/questions/869033/how-do-i-copy-an-object-in-javass
-        this.cards = copyFromDeck.cards;
+        for(Card c:copyFromDeck.getList()) {
+            Card newCard = new Card(c.getRank(), c.getSuit());
+            this.cards.add(newCard);
+        }
     }
 
     Deck(Card firstCard) {
@@ -80,6 +83,7 @@ public class Deck {
             p.Fold();
 
         } else {
+            p.clearHand();
             p.dealtCard(this.popCard());//uses helper function to assign cards
             p.dealtCard(this.popCard());
         }

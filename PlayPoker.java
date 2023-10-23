@@ -48,10 +48,20 @@ public class PlayPoker {
                 river.addCard(deck.popCard()); //flip 1
                 pot = bettingRound(p1, p2, p3, p4, pot, user, river, enter1);
                 //handle win
-                if(p1.isIn()) {//if p1 is in, they are better than nothing
-                    maxHandValue = p1.determineValue(river);
-                    winningPlayers.add(p1);
+                if(user.isIn()) {//if p1 is in, they are better than nothing
+                    maxHandValue = user.determineValue(river);
+                    winningPlayers.add(user);
                 }
+                if(p1.isIn()) { 
+                    if(p1.determineValue(river) == maxHandValue) { //if p2 shares the currently highest value
+                        winningPlayers.add(p1); //add them to the list
+                    } else if(p1.determineValue(river) > maxHandValue) {//if they are higher
+                        maxHandValue = p1.determineValue(river); //clear the list and add themself
+                        winningPlayers.clear();
+                        winningPlayers.add(p1);
+                    }
+                }
+
                 if(p2.isIn()) { 
                     if(p2.determineValue(river) == maxHandValue) { //if p2 shares the currently highest value
                         winningPlayers.add(p2); //add them to the list
@@ -120,7 +130,35 @@ public class PlayPoker {
 
 
                     } else if(maxHandValue == 2) {//pairs. Highest Wins
-                        
+                        for(int j=0;j<=2;j++) { //this needs to run twice. The first loop finds the maximum pair, the second weeds out any pair that is lower
+
+                            for(Player p:winningPlayers) {
+                                ArrayList<Card> fullHand = new ArrayList<Card>();
+                                for(Card c:river.getList()){
+                                    fullHand.add(c);//add river to hand
+                                }
+                                for(Card c:p.getHand().getList()){
+                                    fullHand.add(c); //add player hand to full hand
+                                }
+
+                                for(int i=0; i<6;i++) {
+                                    if(fullHand.get(i).getRank()==fullHand.get(i+1).getRank()) {
+                                        if(maxRank<fullHand.get(i).getRank()) {
+                                            maxRank=fullHand.get(i).getRank();
+                                        } else if(maxRank>fullHand.get(i).getRank()) {
+                                            winningPlayers.remove(p);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        //Now players have been filtered. Split winnings
+                        //note unlike high card, river was included in these calculations
+                        pot=pot/winningPlayers.size();
+                        for(Player p:winningPlayers) {
+                            p.addChips(pot);
+                        }
+
                     } else if(maxHandValue == 3) { //2 pair or 3 of a kind. 3 of a kind beats 2 pair
 
                     } else if(maxHandValue == 5) {//4 is impossible (river is 5), 5 is a straight
@@ -155,13 +193,14 @@ public class PlayPoker {
         System.out.println("\nNew Round\n");
         System.out.println("Your Hand: " + thePlayer.getHand());
         System.out.println("Your Chips: " + thePlayer.getChips() + "   The pot: " + pot);
+        System.out.println("The River: " + river);
         System.out.println("Please enter your bet: ");
         
         while(playerBet == -1) {
             try {
                 playerBet = enter.nextInt();
                 
-                if(playerBet<0) {
+                if(playerBet<0 || playerBet>thePlayer.getChips()) {
                     playerBet = -1;//loop again
                     System.out.println("Please enter a positive integer");
                 }

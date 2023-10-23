@@ -34,6 +34,10 @@ public abstract class Player {
         this.chips = chips;
     }
 
+    public void clearHand() { //empty hand for between rounds
+        hand = new Deck(false);
+    }
+
     public String getName() {
         return name;
     }
@@ -46,8 +50,9 @@ public abstract class Player {
         hand.addCard(c);
     }
     //This function returns an integer representation of the value of their current hand
-    public int determineValue(Deck river) {
-        int riverSize = river.getSize(), straightStreak = 0, maxStraightStreak = 0, hearts = 0, clubs = 0, diamonds = 0, spades = 0, maxFlush = 0;
+    public int determineValue(Deck riverOriginal) {
+        int riverSize = riverOriginal.getSize(), straightStreak = 0, maxStraightStreak = 0, hearts = 0, clubs = 0, diamonds = 0, spades = 0, maxFlush = 0;
+        Deck river = new Deck(riverOriginal);
         Deck fullHand = new Deck(hand);//create a copy so as not to modify actual player hand
         int currentPairCheck = 0, pairSize = 1;
         boolean multiplePairs=false, fullHouse = false;
