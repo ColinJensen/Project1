@@ -214,11 +214,14 @@ public class PlayPoker {
                                             //if pair is indexes 6,7 i will be 7
                                             if(fullHand.get(l).getRank()>=maxHandValue) {
                                                 maxHandValue = fullHand.get(l).getRank();//new highest/equal to, set
+                                                break;//break before second pair scanned
                                             } else {
                                                 //there is no tripple, however there is a higher pair than the highest pair in
                                                 //this hand. this hand lost
                                                 winningPlayers.remove(p);
+                                                break;
                                             }
+                                            
 
                                         }
 
@@ -227,7 +230,6 @@ public class PlayPoker {
                             }
                         }
                         //losing players have been filtered out
-                        System.out.println(foundTripple);
                         pot=pot/winningPlayers.size();//split winnings among remaining players
                         for(Player p:winningPlayersIterate) {//iterate doesnt matter here because no removing.
                             p.addChips(pot);//split winnings
