@@ -132,21 +132,21 @@ public class PlayPoker {
                     } else if(maxHandValue == 2) {//pairs. Highest Wins
                         for(int j=0;j<=2;j++) { //this needs to run twice. The first loop finds the maximum pair, the second weeds out any pair that is lower
 
-                            for(Player p:winningPlayers) {
+                            for(int k=0;k<winningPlayers.size();k++) {
                                 ArrayList<Card> fullHand = new ArrayList<Card>();
                                 for(Card c:river.getList()){
                                     fullHand.add(c);//add river to hand
                                 }
-                                for(Card c:p.getHand().getList()){
+                                for(Card c:winningPlayers.get(k).getHand().getList()){
                                     fullHand.add(c); //add player hand to full hand
                                 }
-
+                                Collections.sort(fullHand);//to make logic easier
                                 for(int i=0; i<6;i++) {
                                     if(fullHand.get(i).getRank()==fullHand.get(i+1).getRank()) {
                                         if(maxRank<fullHand.get(i).getRank()) {
                                             maxRank=fullHand.get(i).getRank();
                                         } else if(maxRank>fullHand.get(i).getRank()) {
-                                            winningPlayers.remove(p);
+                                            winningPlayers.remove(k);
                                         }
                                     }
                                 }
@@ -160,6 +160,61 @@ public class PlayPoker {
                         }
 
                     } else if(maxHandValue == 3) { //2 pair or 3 of a kind. 3 of a kind beats 2 pair
+                        boolean foundTripple = false;
+                        for(int j=0;j<=2;j++) {//Run through twice. The first time will eventually find the highest value. The second will filter any hand that is worse
+                            for(int k=0; k<winningPlayers.size();k++) {
+                                ArrayList<Card> fullHand = new ArrayList<Card>();
+                                for(Card c:river.getList()){
+                                    fullHand.add(c);//add river to hand
+                                }
+                                for(Card c:winningPlayers.get(k).getHand().getList()){
+                                    fullHand.add(c); //add player hand to full hand
+                                }
+                                Collections.sort(fullHand);
+
+                                for(int i=0; i<5;i++) {
+                                    if(fullHand.get(i).getRank()==fullHand.get(i+1).getRank()&&fullHand.get(i+2).getRank()==fullHand.get(i+1).getRank()) {
+                                        //if a tripple found
+                                        foundTripple=true;
+                                        if(fullHand.get(i).getRank()>=maxRank) {
+                                            maxRank = fullHand.get(i).getRank();//new highest tripple
+                                        } else { //lower than best
+                                            winningPlayers.remove(k);
+                                        }
+                                    } else {//this is not a tripple
+                                        if(foundTripple) {
+                                            //this isnt three of a kind(tripple) and one exists. drop this
+                                            winningPlayers.remove(k);
+                                        } else {
+                                            //no three of a kind. Find highest pair
+                                            for(i=6;i!=3;i--) {//this hand has 2 pair. the highest pair WILL
+                                                //be between 7 and 3 indexed because lowest possible is 0,1 and 2,3 pairs
+                                                if(fullHand.get(i).getRank()==fullHand.get(i-1).getRank()) {
+                                                    //I is index of highest pair in the hand, last card in order
+                                                    //if pair is indexes 6,7 i will be 7
+                                                    if(fullHand.get(i).getRank()>=maxHandValue) {
+                                                        maxHandValue = fullHand.get(i).getRank();//new highest/equal to, set
+                                                    } else {
+                                                        //there is no tripple, however there is a higher pair than the highest pair in
+                                                        //this hand. this hand lost
+                                                        winningPlayers.remove(k);
+                                                    }
+
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                }
+
+
+                            }
+                        }
+                        //losing players have been filtered out
+                        pot=pot/winningPlayers.size();//split winnings among remaining players
+                        for(Player p:winningPlayers) {
+                            p.addChips(pot);//split winnings
+                        }
 
                     } else if(maxHandValue == 5) {//4 is impossible (river is 5), 5 is a straight
                         //These are unlikely, and in my rules its going to be a tie

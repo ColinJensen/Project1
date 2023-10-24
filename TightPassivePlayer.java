@@ -6,8 +6,7 @@ public class TightPassivePlayer extends Player {
    public int determineBet(Deck river, int pot, int maxBet) {
          int bet = 0;
          int riverSize = river.getSize(), handValue = super.determineValue(river);
-         System.out.println(handValue);
-         System.out.println(super.hand);
+         System.out.println(name + ": " + super.hand);
          if(chips==0){
             System.out.println(name + " went all in.");
             return 0;
