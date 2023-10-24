@@ -48,6 +48,7 @@ public class PlayPoker {
                 river.addCard(deck.popCard()); //flip 1
                 pot = bettingRound(p1, p2, p3, p4, pot, user, river, enter1);
                 //handle win
+                winningPlayers.clear();//empty for each round
                 if(user.isIn()) {//if p1 is in, they are better than nothing
                     maxHandValue = user.determineValue(river);
                     winningPlayers.add(user);
@@ -99,6 +100,18 @@ public class PlayPoker {
                     for(Player p: winningPlayers){
                         Collections.sort(p.getHand().getList());//sort every player's hand
                     }
+
+                    ArrayList<Player> winningPlayersIterate = new ArrayList<Player>();
+                    //this is a copy of winning players
+                    //turns out you cant remove the object
+                    //from a list you are iterating.
+                    //you can however iterate over a shallow copy
+                    //of the list, and remove from the real list
+                    //by object instead of index
+                    winningPlayersIterate.clear();
+                            for(Player p:winningPlayers) {
+                                winningPlayersIterate.add(p);
+                            }
                     if(maxHandValue == 1) {//no good cards, high card wins
                         for(Player p: winningPlayers) {
                             if(p.getHand().getList().get(1).getRank()>maxRank) {
@@ -116,7 +129,9 @@ public class PlayPoker {
                                 p.addChips(pot);//split winnings
                             }
                         } else{
-                            for(Player p:winningPlayers) {
+
+
+                            for(Player p:winningPlayersIterate) {
                                 if(p.getHand().getList().get(1).getRank()<maxRank) {
                                     winningPlayers.remove(p);
                                 }
@@ -132,12 +147,13 @@ public class PlayPoker {
                     } else if(maxHandValue == 2) {//pairs. Highest Wins
                         for(int j=0;j<=2;j++) { //this needs to run twice. The first loop finds the maximum pair, the second weeds out any pair that is lower
 
-                            for(int k=0;k<winningPlayers.size();k++) {
+                            
+                            for(Player p:winningPlayersIterate) {
                                 ArrayList<Card> fullHand = new ArrayList<Card>();
                                 for(Card c:river.getList()){
                                     fullHand.add(c);//add river to hand
                                 }
-                                for(Card c:winningPlayers.get(k).getHand().getList()){
+                                for(Card c:p.getHand().getList()){
                                     fullHand.add(c); //add player hand to full hand
                                 }
                                 Collections.sort(fullHand);//to make logic easier
@@ -146,7 +162,7 @@ public class PlayPoker {
                                         if(maxRank<fullHand.get(i).getRank()) {
                                             maxRank=fullHand.get(i).getRank();
                                         } else if(maxRank>fullHand.get(i).getRank()) {
-                                            winningPlayers.remove(k);
+                                            winningPlayers.remove(p);
                                         }
                                     }
                                 }
@@ -154,20 +170,21 @@ public class PlayPoker {
                         }
                         //Now players have been filtered. Split winnings
                         //note unlike high card, river was included in these calculations
+                        System.out.print("Yikes");
                         pot=pot/winningPlayers.size();
-                        for(Player p:winningPlayers) {
+                        for(Player p:winningPlayersIterate) {
                             p.addChips(pot);
                         }
 
                     } else if(maxHandValue == 3) { //2 pair or 3 of a kind. 3 of a kind beats 2 pair
                         boolean foundTripple = false;
                         for(int j=0;j<=2;j++) {//Run through twice. The first time will eventually find the highest value. The second will filter any hand that is worse
-                            for(int k=0; k<winningPlayers.size();k++) {
+                            for(Player p:winningPlayersIterate) {
                                 ArrayList<Card> fullHand = new ArrayList<Card>();
                                 for(Card c:river.getList()){
                                     fullHand.add(c);//add river to hand
                                 }
-                                for(Card c:winningPlayers.get(k).getHand().getList()){
+                                for(Card c:p.getHand().getList()){
                                     fullHand.add(c); //add player hand to full hand
                                 }
                                 Collections.sort(fullHand);
@@ -179,40 +196,43 @@ public class PlayPoker {
                                         if(fullHand.get(i).getRank()>=maxRank) {
                                             maxRank = fullHand.get(i).getRank();//new highest tripple
                                         } else { //lower than best
-                                            winningPlayers.remove(k);
+                                            winningPlayers.remove(p);
                                         }
-                                    } else {//this is not a tripple
+                                    }
+                                }
+                                    //this player has no tripple
                                         if(foundTripple) {
                                             //this isnt three of a kind(tripple) and one exists. drop this
-                                            winningPlayers.remove(k);
+                                            winningPlayers.remove(p);
                                         } else {
                                             //no three of a kind. Find highest pair
-                                            for(i=6;i!=3;i--) {//this hand has 2 pair. the highest pair WILL
+                                            for(int l=6;l!=3;l--) {//this hand has 2 pair. the highest pair WILL
                                                 //be between 7 and 3 indexed because lowest possible is 0,1 and 2,3 pairs
-                                                if(fullHand.get(i).getRank()==fullHand.get(i-1).getRank()) {
-                                                    //I is index of highest pair in the hand, last card in order
+                                                if(fullHand.get(l).getRank()==fullHand.get(l-1).getRank()) {
+                                                    //l is index of highest pair in the hand, last card in order
                                                     //if pair is indexes 6,7 i will be 7
-                                                    if(fullHand.get(i).getRank()>=maxHandValue) {
-                                                        maxHandValue = fullHand.get(i).getRank();//new highest/equal to, set
+                                                    if(fullHand.get(l).getRank()>=maxHandValue) {
+                                                        maxHandValue = fullHand.get(l).getRank();//new highest/equal to, set
                                                     } else {
                                                         //there is no tripple, however there is a higher pair than the highest pair in
                                                         //this hand. this hand lost
-                                                        winningPlayers.remove(k);
+                                                        winningPlayers.remove(p);
                                                     }
 
                                                 }
 
                                             }
                                         }
-                                    }
-                                }
+                                    
+                                
 
 
                             }
                         }
                         //losing players have been filtered out
+                        System.out.println(foundTripple);
                         pot=pot/winningPlayers.size();//split winnings among remaining players
-                        for(Player p:winningPlayers) {
+                        for(Player p:winningPlayersIterate) {//iterate doesnt matter here because no removing.
                             p.addChips(pot);//split winnings
                         }
 
@@ -220,21 +240,24 @@ public class PlayPoker {
                         //These are unlikely, and in my rules its going to be a tie
                         
                         pot=pot/winningPlayers.size();//split winnings among remaining players
-                        for(Player p:winningPlayers) {
+                        for(Player p:winningPlayersIterate) {
                             p.addChips(pot);//split winnings
                         }
                     } else if(maxHandValue == 6) {//Flush. high card wins
                         pot=pot/winningPlayers.size();//split winnings among remaining players
-                        for(Player p:winningPlayers) {
+                        for(Player p:winningPlayersIterate) {
                             p.addChips(pot);//split winnings
                         }
                     } else if(maxHandValue == 7) {//full house. higher card wins.
                         pot=pot/winningPlayers.size();//split winnings among remaining players
-                        for(Player p:winningPlayers) {
+                        for(Player p:winningPlayersIterate) {
                             p.addChips(pot);//split winnings
                         }
                     } else if(maxHandValue == 9) {//8 and 9 were combined. Highest card wins
-
+                        pot=pot/winningPlayers.size();//split winnings among remaining players
+                        for(Player p:winningPlayersIterate) {
+                            p.addChips(pot);//split winnings
+                        }
                     }
                 }
 

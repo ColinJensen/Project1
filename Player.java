@@ -22,6 +22,17 @@ public abstract class Player {
         isIn = true;
     }
 
+    Player(Player deepClone) {//this is used to deep clone a player
+        //for the purposes of iterating over players
+        //which is awful
+        this.chips = deepClone.chips;
+        this.hand = deepClone.hand;
+        this.name = deepClone.name;
+        this.currentBet = deepClone.currentBet;
+        this.isIn = deepClone.isIn;
+
+    }
+
     public int getChips() {
         return chips;
     }
