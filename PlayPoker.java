@@ -178,7 +178,11 @@ public class PlayPoker {
 
                     } else if(maxHandValue == 3) { //2 pair or 3 of a kind. 3 of a kind beats 2 pair
                         boolean foundTripple = false;
-                        for(int j=0;j<=2;j++) {//Run through twice. The first time will eventually find the highest value. The second will filter any hand that is worse
+                        for(int j=0;j<=3;j++) {
+                            //run three times
+                            //first is to find if there is a tripple
+                            //second fights highest value
+                            //third guarentees every player checked against highest value
                             for(Player p:winningPlayersIterate) {
                                 ArrayList<Card> fullHand = new ArrayList<Card>();
                                 for(Card c:river.getList()){
@@ -200,33 +204,26 @@ public class PlayPoker {
                                         }
                                     }
                                 }
-                                    //this player has no tripple
-                                        if(foundTripple) {
-                                            //this isnt three of a kind(tripple) and one exists. drop this
-                                            winningPlayers.remove(p);
-                                        } else {
-                                            //no three of a kind. Find highest pair
-                                            for(int l=6;l!=3;l--) {//this hand has 2 pair. the highest pair WILL
-                                                //be between 7 and 3 indexed because lowest possible is 0,1 and 2,3 pairs
-                                                if(fullHand.get(l).getRank()==fullHand.get(l-1).getRank()) {
-                                                    //l is index of highest pair in the hand, last card in order
-                                                    //if pair is indexes 6,7 i will be 7
-                                                    if(fullHand.get(l).getRank()>=maxHandValue) {
-                                                        maxHandValue = fullHand.get(l).getRank();//new highest/equal to, set
-                                                    } else {
-                                                        //there is no tripple, however there is a higher pair than the highest pair in
-                                                        //this hand. this hand lost
-                                                        winningPlayers.remove(p);
-                                                    }
-
-                                                }
-
+                                //we are only certain there is no tripple after one loop
+                                if(!foundTripple &&j>1)  {
+                                    //no three of a kind. Find highest pair
+                                    for(int l=6;l!=3;l--) {//this hand has 2 pair. the highest pair WILL
+                                        //be between 7 and 3 indexed because lowest possible is 0,1 and 2,3 pairs
+                                        if(fullHand.get(l).getRank()==fullHand.get(l-1).getRank()) {
+                                            //l is index of highest pair in the hand, last card in order
+                                            //if pair is indexes 6,7 i will be 7
+                                            if(fullHand.get(l).getRank()>=maxHandValue) {
+                                                maxHandValue = fullHand.get(l).getRank();//new highest/equal to, set
+                                            } else {
+                                                //there is no tripple, however there is a higher pair than the highest pair in
+                                                //this hand. this hand lost
+                                                winningPlayers.remove(p);
                                             }
+
                                         }
-                                    
-                                
 
-
+                                    }
+                                }
                             }
                         }
                         //losing players have been filtered out
