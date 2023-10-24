@@ -27,6 +27,8 @@ public class PlayPoker {
             river = new Deck(false); //make new empty river
             pot = 0;
             deck.Shuffle();//shuffle it
+            maxRank=0;
+            maxHandValue = 0;
             //deal in players. There will be 4 plus human player
                 deck.Deal(user); 
                 deck.Deal(p1); 
@@ -146,8 +148,6 @@ public class PlayPoker {
 
                     } else if(maxHandValue == 2) {//pairs. Highest Wins
                         for(int j=0;j<=2;j++) { //this needs to run twice. The first loop finds the maximum pair, the second weeds out any pair that is lower
-
-                            
                             for(Player p:winningPlayersIterate) {
                                 ArrayList<Card> fullHand = new ArrayList<Card>();
                                 for(Card c:river.getList()){
@@ -170,7 +170,7 @@ public class PlayPoker {
                         }
                         //Now players have been filtered. Split winnings
                         //note unlike high card, river was included in these calculations
-                        System.out.print("Yikes");
+
                         pot=pot/winningPlayers.size();
                         for(Player p:winningPlayersIterate) {
                             p.addChips(pot);

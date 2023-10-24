@@ -22,7 +22,7 @@ public class TightPassivePlayer extends Player {
                bet = 75; //Tight passive is hesitant round 1. Only goes in with good enough hand
             }
          } else if(riverSize==3) { //first 3
-            if(handValue<1) {
+            if(handValue==1) {
                bet=0;
             } else if(handValue>6) {
                bet = 75;
