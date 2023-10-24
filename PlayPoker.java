@@ -11,7 +11,7 @@ public class PlayPoker {
         Player p1 = new TightPassivePlayer("Timb",100);
         Player p2 = new TightPassivePlayer("Tom",100);
         Player p3 = new TightPassivePlayer("Sally",100);
-        Player p4 = new TightPassivePlayer("Destiny",100);
+        Player p4 = new LaxAggresive("Destiny",100);
         Player user = new PlayerChar(100);
 
 
