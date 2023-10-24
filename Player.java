@@ -1,3 +1,7 @@
+//author: Colin Jensen
+//Desc: This is the base class for a player. contains helpful functions, including determining the
+//relative value of a hand
+
 package Project1;
 
 import java.util.ArrayList;

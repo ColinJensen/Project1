@@ -1,3 +1,6 @@
+//author: Colin Jensen
+//Desc: A type of player who bets aggresively. Dont get intimidated!
+
 package Project1;
 
 public class LaxAggresive extends Player{

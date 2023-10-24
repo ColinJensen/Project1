@@ -1,3 +1,5 @@
+//Desc: Card deck. Array of cards and functions to access/mutate data
+//Author: Colinn Jensen
 package Project1;
 
 import java.util.ArrayList;

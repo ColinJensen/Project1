@@ -1,3 +1,6 @@
+//Author: Colin Jensen
+//Desc:Driver of poker game. Run this.
+
 package Project1;
 
 import java.util.ArrayList;

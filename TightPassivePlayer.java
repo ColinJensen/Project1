@@ -1,3 +1,6 @@
+//author: Colin Jensen
+//Desc: This is a passive and lax player. They bet conservatively.
+
 package Project1;
 
 public class TightPassivePlayer extends Player {
